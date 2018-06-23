@@ -226,41 +226,19 @@ public class Main {
         System.out.println();
     }
 
-    private static boolean CheckTriangle(int a, int b, int c) {
-        return a + b > c && a + c > b && b + c > a;
-    }
-
     private static void TriangleMinMax(int min, int max) {
         for (int a = min; a <= max; a++) {
             for (int b = a; b <= max; b++) {
                 for (int c = b; c <= max; c++) {
-                    if (CheckTriangle(a, b, c)) {
-                        System.out.println(String.format("a=%d, b=%d, c=%d треугольник %s", a, b, c, TypeOfTriangle(a, b, c)));
+                    Triangle triangle = new Triangle(a, b, c);
+                    if (triangle.Check()) {
+                        System.out.println(String.format("a=%d, b=%d, c=%d %s %s",
+                                triangle.getA(), triangle.getB(), triangle.getC(),
+                                triangle.GetTypeOfSides().toString(), triangle.GetTypeOfAngle().toString()));
                     }
                 }
             }
         }
-    }
-
-    private static String TypeOfTriangle(int a, int b, int c) {
-        String typeOfTriangle;
-        if (a == b && a == c)
-            typeOfTriangle = "равносторонний";
-        else if (IsIsoscelesTriangle(a, b, c) || IsIsoscelesTriangle(b, c, a) || IsIsoscelesTriangle(c, a, b))
-            typeOfTriangle = "равнобедренный";
-        else typeOfTriangle = "разносторонний";
-        if (IsRectangularTriangle(a, b, c) || IsRectangularTriangle(b, c, a) || IsRectangularTriangle(c, a, b)) {
-            typeOfTriangle += " прямоугольный";
-        }
-        return typeOfTriangle;
-    }
-
-    private static boolean IsRectangularTriangle(int a, int b, int c) {
-        return a * a + b * b == c * c;
-    }
-
-    private static boolean IsIsoscelesTriangle(int a, int b, int c) {
-        return a == b && a != c;
     }
 
     private static void CalculateTriangle() {
@@ -363,22 +341,50 @@ public class Main {
         }
     }
 
-    private static void Schitalka(int n, int m) {
-//        ArrayList<Integer> crug = new ArrayList<Integer>();
-//        for (int i =0; i<n; i++)
-//        {
-//            crug.add(i+1);
+//    private static void Schitalka(int n, int m) {
+//        ArrayList<Integer> crug = new ArrayList<>();
+//        for (int i = 1; i <= n; i++) {
+//            crug.add(i);
 //        }
-//        int i = m;
+//        int iterator = 0;
+//        int i = n;
 //        do {
-//            for (int x = 1; x <= n; x++) {
-//                do i = i % (m + 1);
-//                while (crug.get(i - 1) != i);
-//
-//                System.out.println(crug.get(i - 1));
-//                crug.remove(i - 1);
+//            for (int x = 1; x <= m; x++) {
+//                do {
+//                    i = i % (n + 1);
+//                    if (crug.contains(i)) {
+//                        break;
+//                    }
+//                }
+//                while (true);
 //            }
-//        } while (crug.size()!=0);
+//            System.out.println(i - 1);
+//            crug.set(i - 1, Integer.MIN_VALUE);
+//            iterator++;
+//        } while (iterator != n);
+//    }
+
+    private static int Schitalka(int n, int m) {
+        if (n > 1) {
+            return (Schitalka(n - 1, m) + m - 1) % n + 1;
+        } else
+            return 1;
+    }
+
+    private static void CalculateSchitalka() {
+        try {
+            System.out.print(String.format("Введите число лиц от 2 до %d: ", Integer.MAX_VALUE));
+            int n = Integer.parseInt(bufferedReader.readLine());
+            if (n >= 2) {
+                System.out.print(String.format("Введите число слов от 2 до %d: ", Integer.MAX_VALUE));
+                int m = Integer.parseInt(bufferedReader.readLine());
+                if (m >= 2) {
+                    System.out.println(String.format("Номер проигравшего: %d", Schitalka(n, m)));
+                } else throw new Exception();
+            } else throw new Exception();
+        } catch (Exception e) {
+            CalculateSchitalka();
+        }
     }
 
     private static int[] Sharing(int n) {
@@ -554,7 +560,7 @@ public class Main {
                     CalculateEquation();
                     break;
                 case 19:
-                    Schitalka(10, 4);
+                    CalculateSchitalka();
                     break;
                 case 20:
                     CalculateSharing();
