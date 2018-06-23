@@ -177,13 +177,13 @@
       <window_info anchor="bottom" auto_hide="true" id="Event Log" order="10" sideWeight="0.3845238" side_tool="true" weight="0.32785088" />
       <window_info anchor="right" id="Maven Projects" order="6" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.6154762" visible="true" weight="0.32785088" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.6154762" weight="0.32785088" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3284091" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49429038" visible="true" weight="0.15773809" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49451753" visible="true" weight="0.15773809" />
       <window_info id="Learn" />
-      <window_info id="Structure" order="1" sideWeight="0.50570965" side_tool="true" visible="true" weight="0.15773809" />
+      <window_info id="Structure" order="1" sideWeight="0.50548244" side_tool="true" visible="true" weight="0.15773809" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="7" />
