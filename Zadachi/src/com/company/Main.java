@@ -3,6 +3,8 @@ package com.company;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Main {
@@ -223,6 +225,11 @@ public class Main {
 
     private static void PrintMassiv(int[] a) {
         for (int item : a) System.out.print(String.format("%d ", item));
+        System.out.println();
+    }
+
+    private static void PrintIntegerList(List<Integer> list) {
+        for (int item : list) System.out.print(String.format("%d ", item));
         System.out.println();
     }
 
@@ -815,6 +822,16 @@ public class Main {
         return k;
     }
 
+    private static int CifraSum(int a) {
+        int s = 0;
+        do {
+            s += a % 10;
+            a = (int) (a * 1.0 / 10);
+        } while (a != 0);
+        return s;
+    }
+
+
     private static void AutoMorfNumbers(int a, int b, int m) {
         for (int i = a; i <= b; i++) {
             int d = (int) Math.pow((double) 10, (double) CifraCount(i));
@@ -848,6 +865,34 @@ public class Main {
             max = min * 10 - 1;
         }
         return sum + (n - min + 1) * count;
+    }
+
+    private static void CalculateCubeSum() {
+        try {
+            System.out.print(String.format("Введите нижнюю границу диапозона от 0 до %d: ", Integer.MAX_VALUE));
+            int a = Integer.parseInt(bufferedReader.readLine());
+            if (a >= 0 && a <= Integer.MAX_VALUE) {
+                System.out.print(String.format("Введите верхнюю границу диапозона от %d до %d: ", a, Integer.MAX_VALUE));
+                int b = Integer.parseInt(bufferedReader.readLine());
+                if (b >= a && b <= Integer.MAX_VALUE) {
+                    System.out.print("Числа: ");
+                    PrintIntegerList(CubeSum(a, b));
+                } else throw new Exception();
+            } else throw new Exception();
+        } catch (Exception e) {
+            CalculateAutoMorfNumbers();
+        }
+
+    }
+
+    private static List<Integer> CubeSum(int a, int b) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = a; i <= b; i++) {
+            if (i == Cube(CifraSum(i))) {
+                list.add(i);
+            }
+        }
+        return list;
     }
 
     private static int Input() {
@@ -890,6 +935,7 @@ public class Main {
             System.out.println("33. Дружественные числа");
             System.out.println("35. Автоморфные числа");
             System.out.println("36. Нумерация книжных страниц");
+            System.out.println("38. Сумма кубов цифр");
             System.out.println("0. Выход");
             switch (Input()) {
                 case 0:
@@ -964,12 +1010,15 @@ public class Main {
                 case 35:
                     CalculateAutoMorfNumbers();
                 case 36:
-                    //MaxNumbering();
                     CalculateNumberingOfPages();
+                case 38:
+                    CalculateCubeSum();
                 default:
                     break;
             }
             bufferedReader.readLine();
         }
     }
+
+
 }
