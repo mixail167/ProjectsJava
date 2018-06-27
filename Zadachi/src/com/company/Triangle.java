@@ -1,46 +1,6 @@
 package com.company;
 
 public class Triangle {
-
-    enum TypesOfSides
-    {
-        Equilateral,
-        Isosceles,
-        Versatile;
-
-        @Override
-        public String toString() {
-            switch (this)
-            {
-                case Equilateral:
-                    return "Равносторонний";
-                case Isosceles:
-                    return "Равнобедренный";
-                default:
-                    return "Разносторонний";
-            }
-        }
-    }
-
-    enum TypesOfAngles {
-        Rectangular,
-        Obtuse,
-        Acute;
-
-        @Override
-        public String toString() {
-            switch (this)
-            {
-                case Rectangular:
-                    return "Прямоугольный";
-                case Obtuse:
-                    return "Тупоугольный";
-                default:
-                    return "Остроугольный";
-            }
-        }
-    }
-
     private int a;
     private int b;
     private int c;
@@ -90,8 +50,8 @@ public class Triangle {
     }
 
     TypesOfSides GetTypeOfSides() {
-        Triangle triangle2 = new Triangle(this.getB(), this.getC(), this.getA());
-        Triangle triangle3 = new Triangle(this.getC(), this.getA(), this.getB());
+        Triangle triangle2 = new Triangle(this.b, this.c, this.a);
+        Triangle triangle3 = new Triangle(this.c, this.a, this.b);
         if (this.IsEquilateral())
             typeOfSides = TypesOfSides.Equilateral;
         else if (this.IsIsosceles() || triangle2.IsIsosceles() || triangle3.IsIsosceles())
@@ -100,16 +60,14 @@ public class Triangle {
         return typeOfSides;
     }
 
-    TypesOfAngles GetTypeOfAngle()
-    {
-        Triangle triangle2 = new Triangle(this.getB(), this.getC(), this.getA());
-        Triangle triangle3 = new Triangle(this.getC(), this.getA(), this.getB());
+    TypesOfAngles GetTypeOfAngle() {
+        Triangle triangle2 = new Triangle(this.b, this.c, this.a);
+        Triangle triangle3 = new Triangle(this.c, this.a, this.b);
         if (this.IsRectangular() || triangle2.IsRectangular() || triangle3.IsRectangular()) {
             typeOfAngles = TypesOfAngles.Rectangular;
         } else if (this.IsObtuse() || triangle2.IsObtuse() || triangle3.IsObtuse()) {
             typeOfAngles = TypesOfAngles.Obtuse;
-        }
-        else typeOfAngles = TypesOfAngles.Acute;
+        } else typeOfAngles = TypesOfAngles.Acute;
         return typeOfAngles;
     }
 }
