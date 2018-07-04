@@ -975,14 +975,14 @@ public class Main {
             System.out.print("Введите знаменатель > 0: ");
             int b = Integer.parseInt(bufferedReader.readLine());
             if (b > 0) {
-                System.out.print(String.format("Число: %s", Decimal(a, b)));
+                System.out.print(String.format("Число: %s", Decimal(new Decimal(a, b))));
             } else throw new Exception();
         } catch (Exception e) {
             CalculateDecimal();
         }
     }
 
-    private static int[] Period(int a, int b, int max) {
+    private static int[] Period(Decimal decimal, int max) {
         int[] ost = new int[max + 1];
         for (int i = 0; i <= max; i++) {
             ost[i] = 0;
@@ -992,29 +992,29 @@ public class Main {
         mas[1] = 0;
         do {
             mas[1]++;
-            ost[a] = mas[1];
-            a = (a * 10) % b;
-        } while (ost[a] == 0);
-        if (a == 0)
+            ost[decimal.getNumerator()] = mas[1];
+            decimal.setNumerator((decimal.getNumerator() * 10) % decimal.getDenominator());
+        } while (ost[decimal.getNumerator()] == 0);
+        if (decimal.getNumerator() == 0)
             mas[1]--;
-        else mas[0] = ost[a];
+        else mas[0] = ost[decimal.getNumerator()];
         return mas;
     }
 
-    private static String Decimal(int a, int b) {
+    private static String Decimal(Decimal decimal) {
         String s = "";
-        if (a < 0) {
+        if (decimal.getNumerator() < 0) {
             s = "-";
-            a = Math.abs(a);
+            decimal.setNumerator(Math.abs(decimal.getNumerator()));
         }
-        s = s.concat(String.valueOf((int) (a * 1.0 / b))).concat(".");
-        a %= b;
+        s = s.concat(String.valueOf((int) (decimal.getNumerator() * 1.0 / decimal.getDenominator()))).concat(".");
+        decimal.setNumerator(decimal.getNumerator() % decimal.getDenominator());
         int max = 100;
-        int[] mas = Period(a, b, max);
+        int[] mas = Period(decimal, max);
         for (int i = 1; i <= mas[1]; i++) {
             if (i == mas[0]) s = s.concat("(");
-            s = s.concat(String.valueOf((a * 10) / b));
-            a = (a * 10) % b;
+            s = s.concat(String.valueOf((decimal.getNumerator() * 10) / decimal.getDenominator()));
+            decimal.setNumerator((decimal.getNumerator() * 10) % decimal.getDenominator());
         }
         if (mas[0] != max) s = s.concat(")");
         return s;
@@ -1064,6 +1064,7 @@ public class Main {
             System.out.println("38. Сумма кубов цифр");
             System.out.println("39. Числа Армстронга");
             System.out.println("42. Перестановка с уменьшением");
+            System.out.println("52. Десятичные дроби");
             System.out.println("0. Выход");
             switch (Input()) {
                 case 0:
