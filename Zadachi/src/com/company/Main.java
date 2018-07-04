@@ -871,10 +871,10 @@ public class Main {
         try {
             System.out.print(String.format("Введите нижнюю границу диапозона от 0 до %d: ", Integer.MAX_VALUE));
             int a = Integer.parseInt(bufferedReader.readLine());
-            if (a >= 0 && a <= Integer.MAX_VALUE) {
+            if (a >= 0) {
                 System.out.print(String.format("Введите верхнюю границу диапозона от %d до %d: ", a, Integer.MAX_VALUE));
                 int b = Integer.parseInt(bufferedReader.readLine());
-                if (b >= a && b <= Integer.MAX_VALUE) {
+                if (b >= a) {
                     System.out.print("Числа: ");
                     PrintIntegerList(CubeSum(a, b));
                 } else throw new Exception();
@@ -891,6 +891,60 @@ public class Main {
             if (i == Cube(CifraSum(i))) {
                 list.add(i);
             }
+        }
+        return list;
+    }
+
+    private static void CalculateNumbersArmstrong() {
+        try {
+            System.out.print("Введите число знаков от 2 до 10: ");
+            int a = Integer.parseInt(bufferedReader.readLine());
+            if (a >= 2 && a <= 10) {
+                System.out.print("Числа Армстронга: ");
+                PrintIntegerList(NumbersArmstrongAll(a));
+            } else throw new Exception();
+        } catch (Exception e) {
+            CalculateNumbersArmstrong();
+        }
+    }
+
+    private static List<Integer> NumbersArmstrongAll(int n)
+    {
+        List<Integer> list = new ArrayList<>();
+        for (int i=2; i<=n; i++)
+        {
+            list.addAll(NumbersArmstrong(i));
+        }
+        return list;
+    }
+
+    private static List<Integer> NumbersArmstrong(int n) {
+        List<Integer> list = new ArrayList<>();
+        int[] step = new int[10];
+        for (int i = 0; i < step.length; i++) {
+            step[i] = i;
+            for (int j = 2; j <= n; j++) {
+                step[i] *= i;
+            }
+        }
+        int min = 1;
+        for (int i = 1; i < n; i++) {
+            min = min * 10;
+        }
+        int max;
+        if (n == 10) {
+            max = Integer.MAX_VALUE;
+        } else max = min * 10 - 1;
+        for (int i = min; i<=max; i++)
+        {
+            int p = i;
+            int sum = 0;
+            for (int j = 1; j <= n; j++) {
+                sum+=step[p%10];
+                p = (int)(p*1.0/10);
+            }
+            if(sum == i)
+                list.add(i);
         }
         return list;
     }
@@ -936,6 +990,7 @@ public class Main {
             System.out.println("35. Автоморфные числа");
             System.out.println("36. Нумерация книжных страниц");
             System.out.println("38. Сумма кубов цифр");
+            System.out.println("39. Числа Армстронга");
             System.out.println("0. Выход");
             switch (Input()) {
                 case 0:
@@ -1007,18 +1062,23 @@ public class Main {
                     break;
                 case 33:
                     CalculateFriendlyNumbers();
+                    break;
                 case 35:
                     CalculateAutoMorfNumbers();
+                    break;
                 case 36:
                     CalculateNumberingOfPages();
+                    break;
                 case 38:
                     CalculateCubeSum();
+                    break;
+                case 39:
+                    CalculateNumbersArmstrong();
+                    break;
                 default:
                     break;
             }
             bufferedReader.readLine();
         }
     }
-
-
 }
