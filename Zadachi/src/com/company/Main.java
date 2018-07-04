@@ -908,11 +908,9 @@ public class Main {
         }
     }
 
-    private static List<Integer> NumbersArmstrongAll(int n)
-    {
+    private static List<Integer> NumbersArmstrongAll(int n) {
         List<Integer> list = new ArrayList<>();
-        for (int i=2; i<=n; i++)
-        {
+        for (int i = 2; i <= n; i++) {
             list.addAll(NumbersArmstrong(i));
         }
         return list;
@@ -935,19 +933,93 @@ public class Main {
         if (n == 10) {
             max = Integer.MAX_VALUE;
         } else max = min * 10 - 1;
-        for (int i = min; i<=max; i++)
-        {
+        for (int i = min; i <= max; i++) {
             int p = i;
             int sum = 0;
             for (int j = 1; j <= n; j++) {
-                sum+=step[p%10];
-                p = (int)(p*1.0/10);
+                sum += step[p % 10];
+                p = (int) (p * 1.0 / 10);
             }
-            if(sum == i)
+            if (sum == i)
                 list.add(i);
         }
         return list;
     }
+
+    private static void CalculateZ42() {
+        try {
+            System.out.print("Введите число от 2 до 9: ");
+            int a = Integer.parseInt(bufferedReader.readLine());
+            if (a >= 2 && a <= 10) {
+                System.out.print("Число: ");
+                Z42(a);
+            } else throw new Exception();
+        } catch (Exception e) {
+            CalculateZ42();
+        }
+    }
+
+    private static void Z42(int n) {
+        int a = n;
+        do {
+            int b = (int) (a * 1.0 / n);
+            System.out.print(b);
+            a = (a % n) * 10 + b;
+        } while (a != n);
+    }
+
+    private static void CalculateDecimal() {
+        try {
+            System.out.print("Введите числитель: ");
+            int a = Integer.parseInt(bufferedReader.readLine());
+            System.out.print("Введите знаменатель > 0: ");
+            int b = Integer.parseInt(bufferedReader.readLine());
+            if (b > 0) {
+                System.out.print(String.format("Число: %s", Decimal(a, b)));
+            } else throw new Exception();
+        } catch (Exception e) {
+            CalculateDecimal();
+        }
+    }
+
+    private static int[] Period(int a, int b, int max) {
+        int[] ost = new int[max + 1];
+        for (int i = 0; i <= max; i++) {
+            ost[i] = 0;
+        }
+        int[] mas = new int[2];
+        mas[0] = max;
+        mas[1] = 0;
+        do {
+            mas[1]++;
+            ost[a] = mas[1];
+            a = (a * 10) % b;
+        } while (ost[a] == 0);
+        if (a == 0)
+            mas[1]--;
+        else mas[0] = ost[a];
+        return mas;
+    }
+
+    private static String Decimal(int a, int b) {
+        String s = "";
+        if (a < 0) {
+            s = "-";
+            a = Math.abs(a);
+        }
+        s = s.concat(String.valueOf((int) (a * 1.0 / b))).concat(".");
+        a %= b;
+        int max = 100;
+        int[] mas = Period(a, b, max);
+        for (int i = 1; i <= mas[1]; i++) {
+            if (i == mas[0]) s = s.concat("(");
+            s = s.concat(String.valueOf((a * 10) / b));
+            a = (a * 10) % b;
+        }
+        if (mas[0] != max) s = s.concat(")");
+        return s;
+    }
+
 
     private static int Input() {
         try {
@@ -991,6 +1063,7 @@ public class Main {
             System.out.println("36. Нумерация книжных страниц");
             System.out.println("38. Сумма кубов цифр");
             System.out.println("39. Числа Армстронга");
+            System.out.println("42. Перестановка с уменьшением");
             System.out.println("0. Выход");
             switch (Input()) {
                 case 0:
@@ -1074,6 +1147,12 @@ public class Main {
                     break;
                 case 39:
                     CalculateNumbersArmstrong();
+                    break;
+                case 42:
+                    CalculateZ42();
+                    break;
+                case 52:
+                    CalculateDecimal();
                     break;
                 default:
                     break;
