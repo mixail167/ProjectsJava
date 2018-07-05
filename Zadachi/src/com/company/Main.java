@@ -1020,6 +1020,153 @@ public class Main {
         return s;
     }
 
+    private static void CalculateHeightSound() {
+
+        boolean flag;
+        HeightSound heightSound = new HeightSound();
+        do {
+            System.out.print("Введите октаву: ");
+            try {
+                int a = Integer.parseInt(bufferedReader.readLine());
+                switch (a) {
+                    case 0:
+                        heightSound.setOctave(Octave.SubContrOctave);
+                        flag = false;
+                        break;
+                    case 1:
+                        heightSound.setOctave(Octave.ContrOctave);
+                        flag = false;
+                        break;
+                    case 2:
+                        heightSound.setOctave(Octave.Large);
+                        flag = false;
+                        break;
+                    case 3:
+                        heightSound.setOctave(Octave.Small);
+                        flag = false;
+                        break;
+                    case 4:
+                        heightSound.setOctave(Octave.First);
+                        flag = false;
+                        break;
+                    case 5:
+                        heightSound.setOctave(Octave.Second);
+                        flag = false;
+                        break;
+                    case 6:
+                        heightSound.setOctave(Octave.Third);
+                        flag = false;
+                        break;
+                    case 7:
+                        heightSound.setOctave(Octave.Fourth);
+                        flag = false;
+                        break;
+                    case 8:
+                        heightSound.setOctave(Octave.Fifth);
+                        flag = false;
+                        break;
+                    default:
+                        flag = true;
+                        break;
+                }
+            } catch (Exception e) {
+                flag = true;
+            }
+        } while (flag);
+        do {
+            System.out.print("Введите звук: ");
+            try {
+                int a = Integer.parseInt(bufferedReader.readLine());
+                switch (a) {
+                    case 0:
+                        heightSound.setSound(Sound.Do);
+                        flag = false;
+                        break;
+                    case 1:
+                        heightSound.setSound(Sound.Re);
+                        flag = false;
+                        break;
+                    case 2:
+                        heightSound.setSound(Sound.Mi);
+                        flag = false;
+                        break;
+                    case 3:
+                        heightSound.setSound(Sound.Fa);
+                        flag = false;
+                        break;
+                    case 4:
+                        heightSound.setSound(Sound.Solt);
+                        flag = false;
+                        break;
+                    case 5:
+                        heightSound.setSound(Sound.Lya);
+                        flag = false;
+                        break;
+                    case 6:
+                        heightSound.setSound(Sound.Si);
+                        flag = false;
+                        break;
+                    default:
+                        flag = true;
+                        break;
+                }
+            } catch (Exception e) {
+                flag = true;
+            }
+        } while (flag);
+        do {
+            System.out.print("Введите прибавку: ");
+            try {
+                int a = Integer.parseInt(bufferedReader.readLine());
+                switch (a) {
+                    case 0:
+                        heightSound.setSignsOfAlteration(SignsOfAlteration.Diez);
+                        flag = false;
+                        break;
+                    case 1:
+                        heightSound.setSignsOfAlteration(SignsOfAlteration.Bemol);
+                        flag = false;
+                        break;
+                    case 2:
+                        heightSound.setSignsOfAlteration(SignsOfAlteration.No);
+                        flag = false;
+                        break;
+                    default:
+                        flag = true;
+                        break;
+                }
+            } catch (Exception e) {
+                flag = true;
+            }
+        } while (flag);
+        System.out.println(String.format("Частота: %f", Frequency(heightSound)));
+    }
+
+    private static double Frequency(HeightSound heightSound) {
+        double frequency = 440;
+        double semitone = 1.05946;
+        for (int i = Octave.First.ordinal() - 1; i >= heightSound.getOctave().ordinal(); i--) {
+            frequency /= 2;
+        }
+        for (int i = Octave.First.ordinal() + 1; i <= heightSound.getOctave().ordinal(); i++) {
+            frequency *= 2;
+        }
+        if (heightSound.getSound().equals(Sound.Si))
+            frequency *= semitone * semitone;
+        else {
+            for (int i = Sound.Lya.ordinal() - 1; i >= heightSound.getSound().ordinal(); i--) {
+                if (i == Sound.Mi.ordinal())
+                    frequency /= semitone;
+                else frequency /= (semitone * semitone);
+            }
+        }
+        if (heightSound.getSignsOfAlteration().equals(SignsOfAlteration.Diez))
+            frequency*=semitone;
+        else if (heightSound.getSignsOfAlteration().equals(SignsOfAlteration.Bemol))
+            frequency/=semitone;
+        return frequency;
+    }
+
 
     private static int Input() {
         try {
@@ -1032,7 +1179,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         boolean lock = true;
         while (lock) {
@@ -1065,6 +1212,7 @@ public class Main {
             System.out.println("39. Числа Армстронга");
             System.out.println("42. Перестановка с уменьшением");
             System.out.println("52. Десятичные дроби");
+            System.out.println("55. Высота музыкального звука");
             System.out.println("0. Выход");
             switch (Input()) {
                 case 0:
@@ -1155,10 +1303,16 @@ public class Main {
                 case 52:
                     CalculateDecimal();
                     break;
+                case 55:
+                    CalculateHeightSound();
+                    break;
                 default:
                     break;
             }
-            bufferedReader.readLine();
+            try {
+                bufferedReader.readLine();
+            } catch (IOException e) {
+            }
         }
     }
 }
