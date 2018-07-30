@@ -5,12 +5,13 @@ class ArrayEntry {
     int value;
     ArrayEntry nextEntry;
 
-    public ArrayEntry(int column) {
+    ArrayEntry(int column) {
         columnNumber = column;
     }
 
-    public ArrayEntry(int columnNumber, int value) {
+    ArrayEntry(int columnNumber, int value, ArrayEntry nextEntry) {
         this.columnNumber = columnNumber;
         this.value = value;
+        this.nextEntry = nextEntry;
     }
 }

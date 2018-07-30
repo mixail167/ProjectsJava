@@ -5,11 +5,6 @@ class ArrayRow {
     private ArrayRow nextRow;
     private ArrayEntry rowSentinel;
 
-    public ArrayRow(int row, int column, int value) {
-        rowNumber = row;
-        rowSentinel = new ArrayEntry(column, value);
-    }
-
     private ArrayRow FindRowBefore(int row) {
         ArrayRow arrayRow = this;
         while (arrayRow.nextRow != null && arrayRow.nextRow.rowNumber < row) {
@@ -18,44 +13,40 @@ class ArrayRow {
         return arrayRow;
     }
 
-    public ArrayRow() {
+    ArrayRow() {
+        this.rowNumber = -1;
     }
 
-    public ArrayRow(int rowNumber) {
+    private ArrayRow(int rowNumber) {
         this.rowNumber = rowNumber;
     }
 
     void SetValue(int row, int column, int value) {
-        if (value == 0) {
+        if (value == Integer.MAX_VALUE) {
             DeleteEntry(row, column);
             return;
         }
         ArrayRow arrayRow = FindRowBefore(row);
-        if (arrayRow.nextRow == null || arrayRow.nextRow.rowNumber < row) {
+        if (arrayRow.nextRow == null || arrayRow.nextRow.rowNumber > row) {
             ArrayRow new_row = new ArrayRow(row);
             new_row.nextRow = arrayRow.nextRow;
             arrayRow.nextRow = new_row;
-
             ArrayEntry sentinel_entry = new ArrayEntry(column);
             new_row.rowSentinel = sentinel_entry;
-            sentinel_entry.nextEntry = null;
             sentinel_entry.value = value;
-            arrayRow = arrayRow.nextRow;
+            return;
         }
+        arrayRow = arrayRow.nextRow;
         ArrayEntry arrayEntry = FindColumnBefore(column, arrayRow.rowSentinel);
-        if (arrayEntry.nextEntry == null || arrayEntry.nextEntry.columnNumber < column)
-        {
-            ArrayEntry new_entry = new ArrayEntry(column);
-            new_entry.nextEntry = arrayEntry.nextEntry;
-            arrayEntry.nextEntry = new_entry;
-            arrayEntry = arrayEntry.nextEntry;
-            arrayEntry.value = value;
-        }
-        else if (arrayEntry.nextEntry != null || arrayEntry.nextEntry.columnNumber > column)
-        {
-            ArrayEntry new_entry = new ArrayEntry(column);
-            new_entry.nextEntry = arrayEntry.nextEntry;
-            arrayEntry.nextEntry = new_entry;
+        if (arrayRow.rowSentinel == arrayEntry && arrayEntry.columnNumber > column) {
+            arrayRow.rowSentinel = new ArrayEntry(column, value, arrayEntry);
+        } else {
+            if (arrayEntry.nextEntry == null || arrayEntry.nextEntry.columnNumber > column) {
+
+                ArrayEntry new_entry = new ArrayEntry(column);
+                new_entry.nextEntry = arrayEntry.nextEntry;
+                arrayEntry.nextEntry = new_entry;
+            }
             arrayEntry = arrayEntry.nextEntry;
             arrayEntry.value = value;
         }
@@ -64,9 +55,15 @@ class ArrayRow {
     int GetValue(int row, int column) {
         ArrayRow arrayRow = FindRowBefore(row);
         arrayRow = arrayRow.nextRow;
-        if (arrayRow == null || arrayRow.rowNumber > row) return 0;
+        if (arrayRow == null || arrayRow.rowNumber > row) return Integer.MAX_VALUE;
         ArrayEntry arrayEntry = FindColumnBefore(column, arrayRow.rowSentinel);
-        if (arrayEntry == null || arrayEntry.columnNumber > column) return 0;
+        if (arrayEntry == null || arrayEntry.columnNumber > column) return Integer.MAX_VALUE;
+        if (arrayEntry.nextEntry != null && arrayEntry.nextEntry.columnNumber == column)
+            arrayEntry = arrayEntry.nextEntry;
+        else if (arrayEntry.nextEntry != null && arrayEntry.nextEntry.columnNumber > column && arrayEntry.columnNumber != column)
+            return Integer.MAX_VALUE;
+        else if (arrayEntry.nextEntry == null && arrayEntry.columnNumber < column)
+            return Integer.MAX_VALUE;
         return arrayEntry.value;
     }
 
@@ -77,18 +74,23 @@ class ArrayRow {
         return arrayEntry;
     }
 
-    private void DeleteEntry(int row, int column) {
+    void DeleteEntry(int row, int column) {
         ArrayRow arrayRow = FindRowBefore(row);
         if (arrayRow.nextRow == null || arrayRow.nextRow.rowNumber > row)
             return;
         ArrayRow target_row = arrayRow.nextRow;
         ArrayEntry arrayEntry = FindColumnBefore(column, target_row.rowSentinel);
-        if (arrayEntry.nextEntry == null || arrayEntry.nextEntry.columnNumber > column)
-            return;
-        arrayEntry.nextEntry = arrayEntry.nextEntry.nextEntry;
-        if (target_row.rowSentinel.nextEntry != null)
-            return;
-        arrayRow.nextRow = arrayRow.nextRow.nextRow;
-
+        if (arrayEntry == target_row.rowSentinel) {
+            if (arrayEntry.nextEntry == null)
+                arrayRow.nextRow = arrayRow.nextRow.nextRow;
+            else if (arrayEntry.nextEntry.columnNumber > column && arrayEntry.columnNumber == column) {
+                target_row.rowSentinel = arrayEntry.nextEntry;
+            } else if (arrayEntry.nextEntry.columnNumber == column) {
+                arrayEntry.nextEntry = arrayEntry.nextEntry.nextEntry;
+            }
+        } else if (arrayEntry.nextEntry == null || arrayEntry.nextEntry.columnNumber > column) {
+        } else {
+            arrayEntry.nextEntry = arrayEntry.nextEntry.nextEntry;
+        }
     }
 }

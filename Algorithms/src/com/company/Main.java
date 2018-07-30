@@ -25,24 +25,74 @@ public class Main {
                         array[FindIndex(i, j)] = r.nextInt(100);
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n && i >= j; j++)
-                        System.out.printf("%-3d",array[FindIndex(i, j)]);
+                        System.out.printf("%-3d", array[FindIndex(i, j)]);
                     System.out.println();
                 }
             } catch (Exception ignored) {
 
             }
         } while (n <= 0);
-
-        /*ArrayRow arrayRow = new ArrayRow(0,2,5);
-        //arrayRow.SetValue(0,2,5);
-        arrayRow.SetValue(1,4,20);
-        arrayRow.SetValue(0,5,6);
-        arrayRow.SetValue(0,1,8);
-        int temp = arrayRow.GetValue(0,2);
-        System.out.println(temp);
-        temp = arrayRow.GetValue(1,4);
-        System.out.println(temp);
-        temp = arrayRow.GetValue(0,5);
-        System.out.println(temp);*/
+        System.out.println("Массив с разрывом");
+        ArrayRow arrayRow = new ArrayRow();
+        n = 10;
+        int bound = 5;
+        int[] rows = new int[n];
+        int[] columns = new int[n];
+        int[][] values = new int[bound][bound];
+        for (int i = 0; i < bound; i++) {
+            for (int j = 0; j < bound; j++) {
+                values[i][j] = Integer.MAX_VALUE;
+            }
+        }
+        Random random = new Random();
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = random.nextInt(bound);
+            columns[i] = random.nextInt(bound);
+            values[rows[i]][columns[i]] = random.nextInt(bound);
+            arrayRow.SetValue(rows[i], columns[i], values[rows[i]][columns[i]]);
+        }
+        for (int i = 0; i < bound; i++) {
+            for (int j = 0; j < bound; j++) {
+                if (values[i][j] != Integer.MAX_VALUE) {
+                    System.out.printf("%-3d", values[i][j]);
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (int i = 0; i < bound; i++) {
+            for (int j = 0; j < bound; j++) {
+                int value = arrayRow.GetValue(i, j);
+                if (value != Integer.MAX_VALUE) {
+                    System.out.printf("%-3d", value);
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (int i = 0; i < 2; i++) {
+            int row = rows[random.nextInt(n)];
+            int column = columns[random.nextInt(n)];
+            values[row][column] = Integer.MAX_VALUE;
+            arrayRow.DeleteEntry(row, column);
+        }
+        for (int i = 0; i < bound; i++) {
+            for (int j = 0; j < bound; j++) {
+                if (values[i][j] != Integer.MAX_VALUE) {
+                    System.out.printf("%-3d", values[i][j]);
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (int i = 0; i < bound; i++) {
+            for (int j = 0; j < bound; j++) {
+                int value = arrayRow.GetValue(i, j);
+                if (value != Integer.MAX_VALUE) {
+                    System.out.printf("%-3d", value);
+                }
+            }
+            System.out.println();
+        }
     }
 }
