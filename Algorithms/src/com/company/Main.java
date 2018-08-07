@@ -49,6 +49,63 @@ public class Main {
         return -1;
     }
 
+    private static void ResetQueen(int i, int j, int[][] board)
+    {
+        for (int x = 0; x < board.length; ++x)
+        {
+            --board[x][j];
+            --board[i][x];
+            int k;
+            k = j - i + x;
+            if (k >= 0 && k < board.length)
+                --board[x][k];
+            k = j + i - x;
+            if (k >= 0 && k < board.length)
+                --board[x][k];
+        }
+        board[i][j] = 0;
+    }
+
+    private static boolean TryQueen(int i, int[][] board)
+    {
+        boolean result = false;
+        for (int j = 0; j < board.length; ++j)
+        {
+            if (board[i][j] == 0)
+            {
+                SetQueen(i, j, board);
+                if (i == board.length-1)
+                    result = true;
+                else
+                {
+                    if (!(result = TryQueen(i + 1, board)))
+                        ResetQueen(i, j, board);
+                }
+            }
+            if (result)
+                break;
+        }
+        return result;
+    }
+
+    private static void SetQueen(int i, int j, int[][] board)
+    {
+        for (int x = 0; x < board.length; ++x)
+        {
+            ++board[x][j];
+            ++board[i][x];
+            int k;
+            k = j - i + x;
+            if (k >= 0 && k < board.length)
+                ++board[x][k];
+            k = j + i - x;
+            if (k >= 0 && k < board.length)
+                ++board[x][k];
+        }
+        board[i][j] = -1;
+    }
+
+
 
     public static void main(String[] args) {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -73,6 +130,30 @@ public class Main {
 
             }
         } while (n <= 0);
+        System.out.println("Восемь ферзей");
+        while (true)
+        {
+            System.out.print("Введите N:");
+            try {
+                n = Integer.parseInt(bufferedReader.readLine());
+                int[][] board = new int[n][n];
+                TryQueen(0, board);
+                for (int[] aBoard : board) {
+                    for (int j = 0; j < board.length; j++) {
+                        if (aBoard[j] == -1)
+                            System.out.print("+");
+                        else
+                            System.out.print("-");
+                    }
+                    System.out.println();
+                }
+                break;
+            }
+            catch (Exception ignored)
+            {
+
+            }
+        }
         System.out.println("Интерполяционный поиск в треугольном массиве");
         while (true) {
             try {

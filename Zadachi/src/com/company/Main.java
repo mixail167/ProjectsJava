@@ -1161,12 +1161,11 @@ public class Main {
             }
         }
         if (heightSound.getSignsOfAlteration().equals(SignsOfAlteration.Diez))
-            frequency*=semitone;
+            frequency *= semitone;
         else if (heightSound.getSignsOfAlteration().equals(SignsOfAlteration.Bemol))
-            frequency/=semitone;
+            frequency /= semitone;
         return frequency;
     }
-
 
     private static int Input() {
         try {
@@ -1179,7 +1178,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         boolean lock = true;
         while (lock) {
