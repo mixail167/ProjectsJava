@@ -2,10 +2,34 @@ package com.company;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
+
+    private static int[] Erastofen(int n)
+    {
+        boolean[] arrayBool = new boolean[n];
+        for (int i = 2; i < n; i++) {
+            arrayBool[i] = true;
+        }
+        for (int i = 2; i < Math.sqrt(arrayBool.length) + 1; ++i) {
+            if (arrayBool[i]) {
+                for (int j = i * i; j < n; j += i) {
+                    arrayBool[j] = false;
+                }
+            }
+        }
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 2; i < n; i++) {
+            if (arrayBool[i])
+            {
+                list.add(i);
+            }
+        }
+        return list.stream().mapToInt(i -> i).toArray();
+    }
 
     private static int FindIndex(int row, int column) {
         return (row * row + row) / 2 + column;
@@ -49,10 +73,8 @@ public class Main {
         return -1;
     }
 
-    private static void ResetQueen(int i, int j, int[][] board)
-    {
-        for (int x = 0; x < board.length; ++x)
-        {
+    private static void ResetQueen(int i, int j, int[][] board) {
+        for (int x = 0; x < board.length; ++x) {
             --board[x][j];
             --board[i][x];
             int k;
@@ -66,18 +88,14 @@ public class Main {
         board[i][j] = 0;
     }
 
-    private static boolean TryQueen(int i, int[][] board)
-    {
+    private static boolean TryQueen(int i, int[][] board) {
         boolean result = false;
-        for (int j = 0; j < board.length; ++j)
-        {
-            if (board[i][j] == 0)
-            {
+        for (int j = 0; j < board.length; ++j) {
+            if (board[i][j] == 0) {
                 SetQueen(i, j, board);
-                if (i == board.length-1)
+                if (i == board.length - 1)
                     result = true;
-                else
-                {
+                else {
                     if (!(result = TryQueen(i + 1, board)))
                         ResetQueen(i, j, board);
                 }
@@ -88,10 +106,8 @@ public class Main {
         return result;
     }
 
-    private static void SetQueen(int i, int j, int[][] board)
-    {
-        for (int x = 0; x < board.length; ++x)
-        {
+    private static void SetQueen(int i, int j, int[][] board) {
+        for (int x = 0; x < board.length; ++x) {
             ++board[x][j];
             ++board[i][x];
             int k;
@@ -104,7 +120,6 @@ public class Main {
         }
         board[i][j] = -1;
     }
-
 
 
     public static void main(String[] args) {
@@ -131,8 +146,7 @@ public class Main {
             }
         } while (n <= 0);
         System.out.println("Восемь ферзей");
-        while (true)
-        {
+        while (true) {
             System.out.print("Введите N:");
             try {
                 n = Integer.parseInt(bufferedReader.readLine());
@@ -148,9 +162,7 @@ public class Main {
                     System.out.println();
                 }
                 break;
-            }
-            catch (Exception ignored)
-            {
+            } catch (Exception ignored) {
 
             }
         }
@@ -241,6 +253,22 @@ public class Main {
                 }
             }
             System.out.println();
+        }
+        System.out.println("Решето Эрастофена");
+        while (true) {
+            System.out.print("Введите правую границу последовательности чисел: ");
+            try {
+                n = Integer.parseInt(bufferedReader.readLine());
+                if (n >= 2)
+                    array = Erastofen(n);
+                    for (int item : array)
+                    {
+                        System.out.printf("%d ", item);
+                    }
+                    break;
+            } catch (Exception ignored) {
+
+            }
         }
     }
 }
