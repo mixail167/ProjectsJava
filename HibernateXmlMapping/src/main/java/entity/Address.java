@@ -1,6 +1,6 @@
 package entity;
 
-import java.util.Objects;
+import java.util.Set;
 
 public class Address {
     private Long id;
@@ -8,9 +8,19 @@ public class Address {
     private String city;
     private String street;
     private String postCode;
+    private Set<Employee>  employees;
 
     public Address() {
 
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
+    }
+
+
+    public Set<Employee> getEmployees() {
+        return employees;
     }
 
     public String getCountry() {
@@ -51,23 +61,6 @@ public class Address {
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address = (Address) o;
-        return Objects.equals(country, address.country) &&
-                Objects.equals(city, address.city) &&
-                Objects.equals(street, address.street) &&
-                Objects.equals(postCode, address.postCode);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(country, city, street, postCode);
     }
 
     @Override

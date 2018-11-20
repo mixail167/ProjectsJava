@@ -1,6 +1,7 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "ADDRESS")
@@ -22,8 +23,19 @@ public class Address {
     @Column(name = "POST_CODE", length = 10)
     private String postCode;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "address")
+    private Set<Employee> employees;
+
     public Address() {
 
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public Long getId() {

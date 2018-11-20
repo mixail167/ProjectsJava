@@ -8,8 +8,12 @@ import service.AddressService;
 import service.EmployeeService;
 import service.ProjectService;
 
+import javax.persistence.EntityNotFoundException;
 import java.sql.Date;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Domain {
 
@@ -40,6 +44,7 @@ public class Domain {
         Set<Employee> employees = new HashSet<Employee>();
         employees.add(employee);
         project.setEmployees(employees);
+        address.setEmployees(employees);
 
         Set<Project> projects = new HashSet<Project>();
         projects.add(project);
@@ -50,8 +55,17 @@ public class Domain {
         projectService.add(project);
 
         List<Address> addressList = addressService.getAll();
+        for (Address item : addressList) {
+            System.out.println(item.toString());
+        }
         List<Employee> employeeList = employeeService.getAll();
+        for (Employee item : employeeList) {
+            System.out.println(item.toString());
+        }
         List<Project> projectList = projectService.getAll();
+        for (Project item : projectList) {
+            System.out.println(item.toString());
+        }
 
         addressService.update(address);
         employeeService.update(employee);
@@ -61,11 +75,17 @@ public class Domain {
         employee = employeeService.getById(employee.getId());
         project = projectService.getById(project.getId());
 
+        addressService.remove(address);
+        try {
+            employeeService.remove(employee);
+        } catch (EntityNotFoundException ignored) {
 
-        //addressService.remove(address);
-        employeeService.remove(employee);
-        projectService.remove(project);
+        }
+        try {
+            projectService.remove(project);
+        } catch (EntityNotFoundException ignored) {
 
+        }
         HibernateUtil.shutdown();
     }
 

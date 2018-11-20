@@ -1,7 +1,6 @@
 package entity;
 
 import java.sql.Date;
-import java.util.Objects;
 import java.util.Set;
 
 public class Employee {
@@ -64,32 +63,13 @@ public class Employee {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) &&
-                Objects.equals(firstName, employee.firstName) &&
-                Objects.equals(lastName, employee.lastName) &&
-                Objects.equals(birthday, employee.birthday) &&
-                Objects.equals(address, employee.address) &&
-                Objects.equals(projects, employee.projects);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, firstName, lastName, birthday, address, projects);
-    }
-
-    @Override
     public String toString() {
         return "Employee{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthday=" + birthday +
-                ", address=" + address +
+                ", address=" + address.getId() +
                 '}';
     }
 }

@@ -19,5 +19,12 @@
         <property name="postCode" type="string">
             <column name="PoST_CODE" length="10" not-null="true"/>
         </property>
+        <set name="employees" table="EMPLOYEE"
+             inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="ADDRESS_ID" not-null="true" />
+            </key>
+            <one-to-many class="entity.Employee" />
+        </set>
     </class>
 </hibernate-mapping>

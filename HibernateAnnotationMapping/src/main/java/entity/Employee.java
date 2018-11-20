@@ -4,10 +4,6 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.util.Set;
 
-/**
- * Created by vserdiuk on 2/8/2017.
- */
-
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee {
@@ -25,7 +21,8 @@ public class Employee {
     @Column(name = "BIRTHDAY")
     private Date birthday;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="ADDRESS_ID", nullable = false)
     private Address address;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -95,7 +92,7 @@ public class Employee {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthday=" + birthday +
-                ", address=" + address +
+                ", address=" + address.getId() +
                 '}';
     }
 }
