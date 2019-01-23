@@ -1,5 +1,6 @@
 package webdownloader;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,6 +19,7 @@ import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -41,11 +43,19 @@ public class MainFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(MainFrame.this, "Неверный путь к файлу загрузки", "Ошибка", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (!directory.isDirectory()) {
-            JOptionPane.showMessageDialog(MainFrame.this, "Неверный путь к папке загрузки", "Ошибка", JOptionPane.ERROR_MESSAGE);
-            return false;
+        String regex = "^([a-zA-Z]:\\\\|[a-zA-Z]:(\\\\(\\b[^ \\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"][^\\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"]*[^ \\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"]\\b|[^ \\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"]))+|[a-zA-Z]:\\\\((\\b[^ \\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"][^\\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"]*[^ \\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"]\\b|[^ \\\\\\/\\*\\:\\?\\<\\>\\|\\\"\"])\\\\)+)$";
+        if (directory.getPath().matches(regex)) {
+            if (!directory.exists()) {
+                directory.mkdirs();
+                if (directory.exists()) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
         }
-        return true;
+        JOptionPane.showMessageDialog(MainFrame.this, "Неверный путь к папке загрузки", "Ошибка", JOptionPane.ERROR_MESSAGE);
+        return false;
     }
 
     public MainFrame() {
@@ -89,8 +99,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebDownloader");
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.png")));
         setLocationByPlatform(true);
-        setPreferredSize(new java.awt.Dimension(400, 400));
         setResizable(false);
         setSize(new java.awt.Dimension(0, 0));
 
@@ -113,6 +123,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         jTextArea1.setRows(5);
@@ -248,7 +259,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         exit = true;
-        try {    
+        try {
             t.join();
         } catch (InterruptedException ex) {
         }
@@ -263,10 +274,8 @@ public class MainFrame extends javax.swing.JFrame {
         jButton5.setEnabled(flag);
         jTextField1.setEnabled(flag);
         jTextField2.setEnabled(flag);
-        if (flag) {
-            jProgressBar1.setValue(0);
-            jProgressBar2.setValue(0);
-        }
+        jProgressBar1.setValue(0);
+        jProgressBar2.setValue(0);
     }
 
     private void Download(String path1, String path2) {
@@ -279,9 +288,8 @@ public class MainFrame extends javax.swing.JFrame {
         } else {
             return;
         }
-
-        EnableComponents(false);
         exit = false;
+        EnableComponents(false);
         t = new Thread(() -> {
             UpdateLog("Чтение файла...");
             List<String> lines = null;
@@ -290,80 +298,78 @@ public class MainFrame extends javax.swing.JFrame {
                 if (!exit) {
                     jProgressBar1.setMaximum(lines.size());
                     for (String line : lines) {
-                        if (!exit) {
-                            URL website;
-                            try {
-                                website = new URL(line);
-                            } catch (MalformedURLException ex) {
-                                UpdateLog("Ошибка: " + ex.getMessage());
-                                continue;
-                            }
-                            int sizeInt;
-                            try {
-                                URLConnection conn = website.openConnection();
-                                long size = conn.getContentLengthLong();
-                                if (size > Integer.MAX_VALUE) {
-                                    sizeInt = Integer.MAX_VALUE;
-                                } else if (size == -1) {
-                                    UpdateLog("Ошибка: Размер файла неизвестен.");
-                                    continue;
-                                } else {
-                                    sizeInt = Integer.parseInt(String.valueOf(size));
-                                }
-                            } catch (IOException ex) {
-                                UpdateLog("Ошибка: " + ex.getMessage());
-                                continue;
-                            }
-                            ReadableByteChannel rbc;
-                            try {
-                                rbc = Channels.newChannel(website.openStream());
-                            } catch (IOException ex) {
-                                UpdateLog("Ошибка: " + ex.getMessage());
-                                continue;
-                            }
-                            String path = directory.getPath();
-                            if (!path.endsWith("\\")) {
-                                path += "\\";
-                            }
-                            path += line.substring(line.lastIndexOf("/") + 1);
-                            FileOutputStream fos = null;
-                            try {
-                                fos = new FileOutputStream(path);
-                                try {
-                                    UpdateLog("Загрузка данных по URL " + line + "...");
-                                    ByteBuffer data = ByteBuffer.allocate(1024);
-                                    int countSum = 0;
-                                    jProgressBar2.setMaximum(sizeInt);
-                                    while (rbc.read(data) != -1) {
-                                        if (!exit) {
-                                            byte[] buf = data.array();
-                                            fos.write(buf, 0, buf.length);
-                                            countSum += buf.length;
-                                            UpdateProgress(jProgressBar2, countSum);
-                                            if (countSum >= sizeInt) {
-                                                break;
-                                            }
-                                        } else {
-                                            return;
-                                        }
-                                    }
-                                } catch (IOException ex) {
-                                    UpdateLog("Ошибка: " + ex.getMessage());
-                                } finally {
-                                    try {
-                                        fos.close();
-                                    } catch (IOException ex) {
-
-                                    }
-                                    rbc.close();
-                                }
-                            } catch (FileNotFoundException ex) {
-                                UpdateLog("Файл не найден.");
-                            } finally {
-                                UpdateProgress(jProgressBar1, jProgressBar1.getValue() + 1);
-                            }
-                        } else {
+                        if (exit) {
                             return;
+                        }
+                        URL website;
+                        try {
+                            website = new URL(line);
+                        } catch (MalformedURLException ex) {
+                            UpdateLog("Ошибка: " + ex.getMessage());
+                            continue;
+                        }
+                        int sizeInt;
+                        try {
+                            URLConnection conn = website.openConnection();
+                            long size = conn.getContentLengthLong();
+                            if (size > Integer.MAX_VALUE) {
+                                sizeInt = Integer.MAX_VALUE;
+                            } else if (size == -1) {
+                                UpdateLog("Ошибка: Размер файла неизвестен.");
+                                continue;
+                            } else {
+                                sizeInt = Integer.parseInt(String.valueOf(size));
+                            }
+                        } catch (IOException ex) {
+                            UpdateLog("Ошибка: " + ex.getMessage());
+                            continue;
+                        }
+                        ReadableByteChannel rbc;
+                        try {
+                            rbc = Channels.newChannel(website.openStream());
+                        } catch (IOException ex) {
+                            UpdateLog("Ошибка: " + ex.getMessage());
+                            continue;
+                        }
+                        String path = directory.getPath();
+                        if (!path.endsWith("\\")) {
+                            path += "\\";
+                        }
+                        path += line.substring(line.lastIndexOf("/") + 1);
+                        FileOutputStream fos = null;
+                        try {
+                            fos = new FileOutputStream(path);
+                            try {
+                                UpdateLog("Загрузка данных по URL " + line + "...");
+                                ByteBuffer data = ByteBuffer.allocate(1024);
+                                int countSum = 0;
+                                jProgressBar2.setMaximum(sizeInt);
+                                while (rbc.read(data) != -1) {
+                                    if (exit) {
+                                        return;
+                                    }
+                                    byte[] buf = data.array();
+                                    fos.write(buf, 0, buf.length);
+                                    countSum += buf.length;
+                                    UpdateProgress(jProgressBar2, countSum);
+                                    if (countSum >= sizeInt) {
+                                        break;
+                                    }
+                                }
+                            } catch (IOException ex) {
+                                UpdateLog("Ошибка: " + ex.getMessage());
+                            } finally {
+                                try {
+                                    fos.close();
+                                } catch (IOException ex) {
+
+                                }
+                                rbc.close();
+                            }
+                        } catch (FileNotFoundException ex) {
+                            UpdateLog("Файл не найден.");
+                        } finally {
+                            UpdateProgress(jProgressBar1, jProgressBar1.getValue() + 1);
                         }
                         UpdateProgress(jProgressBar2, 0);
                     }
@@ -380,14 +386,16 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void UpdateProgress(JProgressBar jProgressBar, int value) {
-        jProgressBar.setValue(value);
-        jProgressBar.updateUI();
+        SwingUtilities.invokeLater(() -> {
+            jProgressBar.setValue(exit ? 0 : value);
+        });
     }
-    
+
     private void UpdateLog(String text) {
-        jTextArea1.append(text + "\n");
-        jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
-        jTextArea1.updateUI();
+        SwingUtilities.invokeLater(() -> {
+            jTextArea1.append(text + "\n");
+            jTextArea1.setCaretPosition(jTextArea1.getDocument().getLength());
+        });
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
