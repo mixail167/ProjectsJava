@@ -62,7 +62,7 @@ public class MainFrame extends javax.swing.JFrame {
         jFileChooser1.setCurrentDirectory(null);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("WebDownloader");
+        setTitle("Web Downloader");
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.png")));
         setLocationByPlatform(true);
         setResizable(false);
@@ -70,7 +70,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Путь к файлу загрузки:");
 
-        jTextField1.addMouseListener(new ContextMenuMouseListener());
+        jTextField1.addMouseListener(new gui.mouse.listeners.ContextMenuMouseListener());
 
         jButton1.setText("Запуск");
         jButton1.addActionListener(new java.awt.event.ActionListener() {

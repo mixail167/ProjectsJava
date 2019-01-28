@@ -29,3 +29,6 @@ hs_err_pid*
 /GuiTest/build/
 /GuiTest/dist/
 /WebDownloader/dist/
+/GUILibrary/nbproject/private/
+/GUILibrary/dist/
+/GUILibrary/build/

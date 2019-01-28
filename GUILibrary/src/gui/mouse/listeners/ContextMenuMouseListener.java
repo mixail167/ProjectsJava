@@ -1,4 +1,4 @@
-package webdownloader;
+package gui.mouse.listeners;
  
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -22,22 +22,18 @@ public class ContextMenuMouseListener extends MouseAdapter {
         if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
             if (!(e.getSource() instanceof JTextComponent)) {
                 return;
-            }
- 
+            } 
             JTextComponent textComponent = (JTextComponent) e.getSource();
             textComponent.requestFocus();
             boolean enabled = textComponent.isEnabled();
             boolean editable = textComponent.isEditable();
             boolean nonempty = !(textComponent.getText() == null || textComponent.getText().equals(""));
-            boolean marked = textComponent.getSelectedText() != null;
- 
+            boolean marked = textComponent.getSelectedText() != null; 
             boolean pasteAvailable =
                     Toolkit.getDefaultToolkit().getSystemClipboard().
                     getContents(null).isDataFlavorSupported(
-                    DataFlavor.stringFlavor);
- 
-            JPopupMenu popup = new JPopupMenu();
- 
+                    DataFlavor.stringFlavor); 
+            JPopupMenu popup = new JPopupMenu(); 
             if (enabled && editable && marked) {
                 Action cutAction = textComponent.getActionMap().get(DefaultEditorKit.cutAction);
                 if (cutAction == null) {
@@ -64,8 +60,7 @@ public class ContextMenuMouseListener extends MouseAdapter {
                 if (pasteAction != null) {
                     popup.add(pasteAction).setText(PASTETEXT);
                 }
-            }
- 
+            } 
             if (enabled && nonempty) {
                 Action selectAllAction = textComponent.getActionMap().get(DefaultEditorKit.selectAllAction);
                 if (selectAllAction == null) {
@@ -78,10 +73,8 @@ public class ContextMenuMouseListener extends MouseAdapter {
                         }
                     }
                     popup.add(selectAllAction).setText(SELECTAllTEXT);
-                }
- 
-            }
- 
+                } 
+            } 
             if (popup.getComponentCount() > 0) {
                 if (popup.getComponent(0) instanceof JPopupMenu.Separator) {
                     popup.remove(0);
@@ -89,8 +82,6 @@ public class ContextMenuMouseListener extends MouseAdapter {
                 if (popup.getComponent(popup.getComponentCount() - 1) instanceof JPopupMenu.Separator) {
                     popup.remove(popup.getComponentCount() - 1);
                 }
-                
- 
                 popup.show(e.getComponent(), e.getX(), e.getY() - popup.getSize().height);
             }
         }
