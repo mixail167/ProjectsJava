@@ -5,20 +5,20 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ResourceBundle;
 import javax.swing.Action;
 import javax.swing.JPopupMenu;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 
 public class ContextMenuMouseListener extends MouseAdapter {
- 
-    private final static String CUTTEXT = "Вырезать";
-    private final static String SELECTAllTEXT = "Выделить все";
-    private final static String COPYTEXT = "Копировать";
-    private final static String PASTETEXT = "Вставить";
- 
     @Override
     public void mouseClicked(MouseEvent e) {
+        ResourceBundle resource = ResourceBundle.getBundle("resources.data");
+        String cut = resource.getString("cut");
+        String selectAll = resource.getString("selectAll");
+        String copy = resource.getString("copy");
+        String paste = resource.getString("paste");
         if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
             if (!(e.getSource() instanceof JTextComponent)) {
                 return;
@@ -40,7 +40,7 @@ public class ContextMenuMouseListener extends MouseAdapter {
                     cutAction = textComponent.getActionMap().get("cut");
                 }
                 if (cutAction != null) {
-                    popup.add(cutAction).setText(CUTTEXT);
+                    popup.add(cutAction).setText(cut);
                 }
             }
             if (enabled && marked) {
@@ -49,7 +49,7 @@ public class ContextMenuMouseListener extends MouseAdapter {
                     copyAction = textComponent.getActionMap().get("copy");
                 }
                 if (copyAction != null) {
-                    popup.add(copyAction).setText(COPYTEXT);
+                    popup.add(copyAction).setText(copy);
                 }
             }
             if (enabled && editable && pasteAvailable) {
@@ -58,7 +58,7 @@ public class ContextMenuMouseListener extends MouseAdapter {
                     pasteAction = textComponent.getActionMap().get("paste");
                 }
                 if (pasteAction != null) {
-                    popup.add(pasteAction).setText(PASTETEXT);
+                    popup.add(pasteAction).setText(paste);
                 }
             } 
             if (enabled && nonempty) {
@@ -72,7 +72,7 @@ public class ContextMenuMouseListener extends MouseAdapter {
                             popup.addSeparator();
                         }
                     }
-                    popup.add(selectAllAction).setText(SELECTAllTEXT);
+                    popup.add(selectAllAction).setText(selectAll);
                 } 
             } 
             if (popup.getComponentCount() > 0) {
